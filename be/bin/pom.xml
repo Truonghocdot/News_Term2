@@ -70,12 +70,6 @@
 			<artifactId>spring-boot-devtools</artifactId>
 			<scope>runtime</scope>
 		</dependency>
-		<dependency>
-    <groupId>com.microsoft.sqlserver</groupId>
-    <artifactId>mssql-jdbc</artifactId>
-    <version>11.2.1.jre17</version> <!-- chọn phiên bản phù hợp JDK bạn dùng -->
-</dependency>
-
 	</dependencies>
 
 	<build>
