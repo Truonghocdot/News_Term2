@@ -1,4 +1,9 @@
 package news.app.rss.repository;
 
-public interface ReactionRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import news.app.rss.entity.Reaction;
+
+
+public interface ReactionRepository extends JpaRepository<Reaction, Long> {
 }

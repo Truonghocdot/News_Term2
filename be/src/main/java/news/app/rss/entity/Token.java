@@ -11,9 +11,6 @@ import lombok.Setter;
 
 @Table(name="token")
 @Entity
-@Getter
-@Setter
-@NoArgsConstructor
 public class Token {
 	
 	@Id
