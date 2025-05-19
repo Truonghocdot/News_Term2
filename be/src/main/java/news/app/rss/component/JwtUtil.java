@@ -15,7 +15,7 @@ import io.jsonwebtoken.security.Keys;
 
 @Component
 public class JwtUtil {
-	private final String SECRET = "welcome_to_bkap_lai_duc_chung_teacher";
+	private final String SECRET = "welcome_to_sem2_java_spring_boot";
 
 	public String generateToken(UserDetails userDetails, String fullName, String email) {
 	    Map<String, Object> claims = new HashMap<>();

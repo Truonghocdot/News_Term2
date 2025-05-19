@@ -9,4 +9,6 @@ import news.app.rss.entity.Role;
 
 public interface RoleRepository extends JpaRepository<Role, Long> {
     Optional<Role> findByRoleName(String name);
+
+    Role findRoleByRoleId(Long id);
 }

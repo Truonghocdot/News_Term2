@@ -40,7 +40,7 @@ public class JwtFilter extends OncePerRequestFilter {
                 username = jwtUtil.extractUsername(jwt);
             } catch (Exception e) {
                 System.out.println("JWT không hợp lệ: " + e.getMessage());
-            }
+        }
         }
 
         // Nếu có username và chưa xác thực

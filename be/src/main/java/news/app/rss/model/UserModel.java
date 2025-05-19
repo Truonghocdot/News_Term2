@@ -5,7 +5,7 @@ public class UserModel {
 	private String username;
 	private String password;
 	private String fullName;
-	private String email;
+	private String gmail;
 	private String address;
 	private String roleName;
 	public String getUsername() {
@@ -26,11 +26,11 @@ public class UserModel {
 	public void setFullName(String fullName) {
 		this.fullName = fullName;
 	}
-	public String getEmail() {
-		return email;
+	public String getGmail() {
+		return gmail;
 	}
-	public void setEmail(String email) {
-		this.email = email;
+	public void setGmail(String gmail) {
+		this.gmail = gmail;
 	}
 	public String getAddress() {
 		return address;

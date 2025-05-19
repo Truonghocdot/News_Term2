@@ -46,18 +46,20 @@ public class AuthController {
 
 	@Autowired
 	RoleRepository repositoryRoleRepository;
-	
+
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+
 		try {
 			Authentication authentication = authManager.authenticate(
 					new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 
 			UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
 			User user = userDetailsService.getUser(userDetails.getUsername())
 					.orElseThrow(() -> new RuntimeException("User not found"));
 
-			String token = jwtUtil.generateToken(userDetails, user.getUsername(), user.getGmail());
+			String token = jwtUtil.generateToken(userDetails, user.getUsername() ,user.getGmail());
 
 			return ResponseEntity.ok(new AuthResponse(token));
 
@@ -71,7 +73,7 @@ public class AuthController {
 		Role role = repositoryRoleRepository.findByRoleName(userModel.getRoleName()).get();
 		var passencrypt=new BCryptPasswordEncoder().encode(userModel.getPassword());
 		userModel.setPassword(passencrypt);
-		User user=new User(userModel, role);
+		User user = new User(userModel, role);
 		User u = userDetailsService.insert(user);
 		return ResponseEntity.ok(u);
 	}
@@ -82,21 +84,14 @@ public class AuthController {
 		return "Chào Admin";
 	}
 
-	@GetMapping("/user")
-	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
-	public String user() {
-		return "Chào User";
-	}
-
 	@GetMapping("/getprofile")
 	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	public ResponseEntity<?> getMyProfile(@RequestHeader("Authorization") String authHeader) {
 		String token = authHeader.replace("Bearer ", "");
 		String username = jwtUtil.extractUsername(token);
-		String fullName = jwtUtil.extractFullName(token);
 		String email = jwtUtil.extractEmail(token);
 
-		return ResponseEntity.ok(Map.of("username", username, "fullName", fullName, "email", email));
+		return ResponseEntity.ok(Map.of("username", username, "email", email));
 	}
 
 	@GetMapping("/refresh")
