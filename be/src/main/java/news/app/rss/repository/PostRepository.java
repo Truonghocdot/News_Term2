@@ -1,4 +1,9 @@
 package news.app.rss.repository;
 
-public interface PostRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import news.app.rss.entity.Post;
+
+
+public interface PostRepository extends JpaRepository<Post, Long> {
 }

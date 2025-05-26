@@ -9,8 +9,7 @@ import org.springframework.stereotype.Service;
 
 import news.app.rss.entity.Category;
 import news.app.rss.repository.CategoryRepository;
-
-
+import org.springframework.stereotype.Service;
 
 @Service
 public class CategoryService {
