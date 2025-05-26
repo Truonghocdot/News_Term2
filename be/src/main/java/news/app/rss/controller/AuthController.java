@@ -12,14 +12,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,6 +29,7 @@ import news.app.rss.repository.RoleRepository;
 import news.app.rss.service.MyUserDetailsService;
 
 @RestController
+@RequestMapping("/api/auth")
 public class AuthController {
 
 	@Autowired
@@ -79,23 +76,25 @@ public class AuthController {
 	}
 
 	@GetMapping("/admin")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public String admin() {
 		return "Chào Admin";
 	}
+
 
 	@GetMapping("/getprofile")
 	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
 	public ResponseEntity<?> getMyProfile(@RequestHeader("Authorization") String authHeader) {
 		String token = authHeader.replace("Bearer ", "");
 		String username = jwtUtil.extractUsername(token);
-		String email = jwtUtil.extractEmail(token);
+		String gmail = jwtUtil.extractEmail(token);
 
-		return ResponseEntity.ok(Map.of("username", username, "email", email));
+		return ResponseEntity.ok(Map.of("username", username, "gmail", gmail));
 	}
 
+
 	@GetMapping("/refresh")
-	@PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<AuthResponse> refreshToken(HttpServletRequest request) {
 		final String authHeader = request.getHeader("Authorization");
 		if (authHeader == null || !authHeader.startsWith("Bearer ")) {

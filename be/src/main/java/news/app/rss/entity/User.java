@@ -21,10 +21,10 @@ import lombok.Data;
 import news.app.rss.model.UserModel;
 
 
-@Data
+
 @Entity
 @Table(name = "users")
-
+@Data
 public class User {
 
     @Id

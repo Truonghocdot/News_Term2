@@ -10,9 +10,10 @@ import jakarta.persistence.Table;
 import lombok.Data;
 
 
-@Data
+
 @Table(name="comments")
 @Entity
+@Data
 public class Comment {
 	
 	@Id

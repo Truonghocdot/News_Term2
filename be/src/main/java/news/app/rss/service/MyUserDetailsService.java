@@ -31,10 +31,13 @@ public class MyUserDetailsService implements UserDetailsService {
 				.orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
 		Role currentRole = roleRepository.findRoleByRoleId(user.getRoleId());
-
+		if (currentRole == null) {
+			throw new RuntimeException("Role not found for user: " + username);
+		}
 		// Tạo danh sách GrantedAuthority từ role
 		List<GrantedAuthority> authorities = Collections.singletonList(
-				new SimpleGrantedAuthority("ROLE_" + currentRole.getRoleName()) // Ví dụ: ROLE_ADMIN
+//				new SimpleGrantedAuthority("ROLE_" + currentRole.getRoleName()) // Ví dụ: ROLE_ADMIN
+				new SimpleGrantedAuthority(currentRole.getRoleName())
 		);
 
 		return new org.springframework.security.core.userdetails.User(

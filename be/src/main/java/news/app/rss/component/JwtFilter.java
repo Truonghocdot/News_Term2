@@ -42,11 +42,11 @@ public class JwtFilter extends OncePerRequestFilter {
                 System.out.println("JWT không hợp lệ: " + e.getMessage());
         }
         }
-
+//        System.out.println(username + "  ");
         // Nếu có username và chưa xác thực
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-
+//            System.out.println("Authorities: " + userDetails.getAuthorities());
             if (jwtUtil.validateToken(jwt, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities()
