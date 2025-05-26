@@ -1,7 +1,7 @@
 package news.app.rss.controller;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.Long;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +32,7 @@ public class CategoryController {
     }
     
     @GetMapping("/{id}")
-    public ResponseEntity<Category> getById(@PathVariable UUID id) {
+    public ResponseEntity<Category> getById(@PathVariable Long id) {
         return categoryService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
@@ -45,7 +45,7 @@ public class CategoryController {
     }
     //sửa
     @PutMapping("/{id}")
-    public ResponseEntity<Category> update(@PathVariable UUID id, @Valid @RequestBody Category updatedCategory) {
+    public ResponseEntity<Category> update(@PathVariable Long id, @Valid @RequestBody Category updatedCategory) {
         if (!categoryService.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
@@ -54,7 +54,7 @@ public class CategoryController {
     }
     //xóa
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         if (!categoryService.existsById(id)) {
             return ResponseEntity.notFound().build();
         }
