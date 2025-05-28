@@ -17,7 +17,7 @@ public class Post {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private String text;
+	private String title;
 	private String metaKeywords;
 	private String metaDescription;
 	private String content;
@@ -27,6 +27,7 @@ public class Post {
 	private String tags;
 	private Boolean isPublish;
 	private String video;
+	private Long categoryId;
 	private LocalDateTime timePublish;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;

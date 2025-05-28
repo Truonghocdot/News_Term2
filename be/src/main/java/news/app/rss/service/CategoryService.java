@@ -20,7 +20,7 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
-    public Optional<Category> findById(UUID id) {
+    public Optional<Category> findById(Long id) {
         return categoryRepository.findById(id);
     }
 
@@ -28,11 +28,11 @@ public class CategoryService {
         return categoryRepository.save(category);
     }
 
-    public void deleteById(UUID id) {
+    public void deleteById(Long id) {
         categoryRepository.deleteById(id);
     }
 
-    public boolean existsById(UUID id) {
+    public boolean existsById(Long id) {
         return categoryRepository.existsById(id);
     }
 }

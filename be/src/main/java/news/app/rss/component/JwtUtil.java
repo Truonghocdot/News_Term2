@@ -27,7 +27,7 @@ public class JwtUtil {
 				.setSubject(userDetails.getUsername())
 				.setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60)) // 1 giờ
-				.signWith(Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8)), SignatureAlgorithm.HS256)
+				.signWith(Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8)))
 				.compact();
 
 	}
