@@ -6,7 +6,7 @@ import java.util.Optional;
 import news.app.rss.entity.Comment;
 import news.app.rss.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.*;
 
 @RestController

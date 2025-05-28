@@ -1,6 +1,5 @@
 package news.app.rss.service;
 
-import news.app.rss.dto.*;
 import news.app.rss.dto.post.request.PostCreateRequestDto;
 import news.app.rss.dto.post.request.PostSearchRequestDto;
 import news.app.rss.dto.post.request.PostUpdateRequestDto;
