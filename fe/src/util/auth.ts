@@ -8,30 +8,30 @@ interface LoginResponse {
     refreshToken: string
     user: {
       id: string
-      name: string
-      email: string
+      username: string
+      gmail: string
       role: string
     }
   }
 }
 
 interface RegisterData {
-  name: string
-  email: string
+  username: string
+  gmail: string
   password: string
+  roleName: string
 }
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.news-term-2.vn'
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/auth'
 
-export async function login(email: string, password: string): Promise<LoginResponse> {
+export async function login(username: string, password: string): Promise<LoginResponse> {
   try {
-    const response = await fetch(`${API_BASE_URL}/auth/login`, {
+    const response = await fetch(`${API_BASE_URL}/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ username, password }),
     })
-
     const data = await response.json()
 
     if (!response.ok) {
@@ -59,7 +59,7 @@ export async function login(email: string, password: string): Promise<LoginRespo
 
 export async function register(userData: RegisterData): Promise<LoginResponse> {
   try {
-    const response = await fetch(`${API_BASE_URL}/auth/register`, {
+    const response = await fetch(`${API_BASE_URL}/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -67,7 +67,12 @@ export async function register(userData: RegisterData): Promise<LoginResponse> {
       body: JSON.stringify(userData),
     })
 
-    const data = await response.json()
+    let data = null;
+try {
+  data = await response.json();
+} catch (err) {
+  throw new Error('Server did not return valid JSON');
+}
 
     if (!response.ok) {
       throw new Error(data.message || getErrorMessage(response.status))
@@ -92,7 +97,7 @@ export async function refreshToken(): Promise<{ success: boolean; token?: string
       throw new Error('No refresh token available')
     }
 
-    const response = await fetch(`${API_BASE_URL}/auth/refresh`, {
+    const response = await fetch(`${API_BASE_URL}/refresh`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

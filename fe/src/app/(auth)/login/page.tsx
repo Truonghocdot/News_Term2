@@ -13,7 +13,7 @@ import { login } from '../../../util/auth'
 export default function LoginPage() {
   const router = useRouter()
   const [formData, setFormData] = useState({
-    email: '',
+    username: '',
     password: ''
   })
   const [showPassword, setShowPassword] = useState(false)
@@ -26,7 +26,7 @@ export default function LoginPage() {
     setError('')
 
     try {
-      const result = await login(formData.email, formData.password)
+      const result = await login(formData.username, formData.password)
       
       if (result.success) {
         // Redirect to admin dashboard
@@ -64,15 +64,15 @@ export default function LoginPage() {
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="username">Username</Label>
           <div className="relative">
             <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
-              id="email"
-              name="email"
-              type="email"
+              id="username"
+              name="username"
+              type="text"
               placeholder="admin@news-term-2.vn"
-              value={formData.email}
+              value={formData.username}
               onChange={handleChange}
               className="pl-10"
               required

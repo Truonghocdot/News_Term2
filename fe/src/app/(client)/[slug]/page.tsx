@@ -1,12 +1,12 @@
 import { NewsCard } from "@/component/NewsCard"
-import { SidebarClient } from "@/component/SlidebarClient"
+import { SidebarClient } from "../../../component/SidebarClient"
 
 interface CategoryPageProps {
   params: { category: string }
 }
 
 export default function CategoryPage({ params }: CategoryPageProps) {
-  const categoryName = params.category.replace('-', ' ')
+  
   
   return (
     <div className="container mx-auto px-4 py-8">
@@ -14,10 +14,10 @@ export default function CategoryPage({ params }: CategoryPageProps) {
         <div className="lg:col-span-3">
           <div className="mb-8">
             <h1 className="text-3xl font-bold mb-2 capitalize">
-              {categoryName}
+              {params.category}
             </h1>
             <p className="text-gray-600">
-              Tin tức mới nhất về {categoryName}
+              Tin tức mới nhất về {params.category}
             </p>
           </div>
 
@@ -27,9 +27,9 @@ export default function CategoryPage({ params }: CategoryPageProps) {
                 key={i}
                 post={{
                   id: i.toString(),
-                  title: `${categoryName} tin tức số ${i}`,
+                  title: `${params.category} tin tức số ${i}`,
                   excerpt: 'Mô tả ngắn về tin tức trong danh mục này...',
-                  category: { name: categoryName, slug: params.category },
+                  category: { name: params.category, slug: params.category },
                   publishedAt: new Date(),
                   author: { name: 'Tác giả' }
                 }}

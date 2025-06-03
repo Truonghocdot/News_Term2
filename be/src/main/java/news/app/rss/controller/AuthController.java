@@ -1,7 +1,9 @@
 package news.app.rss.controller;
 
 
+import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +45,8 @@ public class AuthController {
 
 	@Autowired
 	RoleRepository repositoryRoleRepository;
+    @Autowired
+    private RoleRepository roleRepository;
 
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody AuthRequest request) {
@@ -67,12 +71,46 @@ public class AuthController {
 
 	@PostMapping("/register")
 	public ResponseEntity<?> register(@RequestBody UserModel userModel) {
-		Role role = repositoryRoleRepository.findByRoleName(userModel.getRoleName()).get();
-		var passencrypt=new BCryptPasswordEncoder().encode(userModel.getPassword());
-		userModel.setPassword(passencrypt);
-		User user = new User(userModel, role);
-		User u = userDetailsService.insert(user);
-		return ResponseEntity.ok(u);
+		try {
+			// Lấy roleName từ userModel, nếu không có hoặc rỗng thì gán mặc định "USER"
+			String roleName = userModel.getRoleName();
+			if (roleName == null || roleName.isBlank()) {
+				roleName = "ROLE_USER";
+			}
+
+			// Tìm role trong database
+			Role role = repositoryRoleRepository.findByRoleName(roleName)
+					.orElseThrow(() -> new RuntimeException("Role not found"));
+
+			// Mã hóa password
+			String encodedPassword = new BCryptPasswordEncoder().encode(userModel.getPassword());
+			userModel.setPassword(encodedPassword);
+
+			// Tạo User mới từ UserModel và Role
+			User user = new User(userModel, role);
+			User savedUser = userDetailsService.insert(user);
+
+			// Tạo token JWT
+			UserDetails userDetails = userDetailsService.loadUserByUsername(savedUser.getUsername());
+			String token = jwtUtil.generateToken(userDetails, savedUser.getUsername(), savedUser.getGmail());
+
+			// Trả về response
+			return ResponseEntity.ok(
+					Map.of(
+							"token", token,
+							"refreshToken", "", // Nếu bạn có refresh token, thêm ở đây
+							"user", Map.of(
+									"id", savedUser.getUserId(),
+									"username", savedUser.getUsername(),
+									"gmail", savedUser.getGmail(),
+									"role", role.getRoleName()
+							)
+					)
+			);
+		} catch (Exception e) {
+			// Trả về lỗi với message chi tiết
+			return ResponseEntity.badRequest().body(Map.of("message", "Registration failed: " + e.getMessage()));
+		}
 	}
 
 	@GetMapping("/admin")
@@ -93,7 +131,7 @@ public class AuthController {
 	}
 
 
-	@GetMapping("/refresh")
+	@PostMapping("/refresh")
 	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<AuthResponse> refreshToken(HttpServletRequest request) {
 		final String authHeader = request.getHeader("Authorization");

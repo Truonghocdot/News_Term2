@@ -1,3 +1,4 @@
+"use client"
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
@@ -11,10 +12,11 @@ import { register } from '../../../util/auth'
 export default function RegisterPage() {
   const router = useRouter()
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
+    username: '',
+    gmail: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    roleName: 'ROLE_ADMIN'
   })
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
@@ -37,9 +39,10 @@ export default function RegisterPage() {
 
     try {
       const result = await register({
-        name: formData.name,
-        email: formData.email,
-        password: formData.password
+        username: formData.username,
+        gmail: formData.gmail,
+        password: formData.password,
+        roleName: formData.roleName
       })
       
       if (result.success) {
@@ -91,11 +94,11 @@ export default function RegisterPage() {
           <div className="relative">
             <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
-              id="name"
-              name="name"
+              id="username"
+              name="username"
               type="text"
               placeholder="Nguyễn Văn A"
-              value={formData.name}
+              value={formData.username}
               onChange={handleChange}
               className="pl-10"
               required
@@ -108,11 +111,11 @@ export default function RegisterPage() {
           <div className="relative">
             <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
-              id="email"
-              name="email"
+              id="gmail"
+              name="gmail"
               type="email"
               placeholder="admin@news-term-2.vn"
-              value={formData.email}
+              value={formData.gmail}
               onChange={handleChange}
               className="pl-10"
               required

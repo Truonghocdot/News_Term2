@@ -49,4 +49,5 @@ public class User {
         this.gmail = model.getGmail();
         this.roleId = role.getRoleId();
     }
+
 }
