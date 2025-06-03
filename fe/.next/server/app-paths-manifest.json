@@ -1,7 +1,5 @@
 {
-  "/(client)/page": "app/(client)/page.js",
-  "/(client)/[slug]/page": "app/(client)/[slug]/page.js",
-  "/(auth)/login/page": "app/(auth)/login/page.js",
-  "/admin/page": "app/admin/page.js",
-  "/(auth)/register/page": "app/(auth)/register/page.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/admin/user/page": "app/admin/user/page.js",
+  "/admin/category/page": "app/admin/category/page.js"
 }

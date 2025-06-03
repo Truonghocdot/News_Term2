@@ -7,7 +7,9 @@ import {
   Image, 
   Users, 
   Settings,
-  BarChart3
+  BarChart3,
+  VideoIcon,
+  List
 } from 'lucide-react'
 import { cn } from '../util/util'
 
@@ -28,20 +30,26 @@ const menuItems = [
     icon: Image
   },
   {
+    title: 'Danh mục',
+    href: '/admin/category',
+    icon: List
+  },
+  {
     title: 'Người dùng',
-    href: '/admin/users',
+    href: '/admin/user',
     icon: Users
   },
   {
-    title: 'Thống kê',
-    href: '/admin/analytics',
-    icon: BarChart3
+    title: 'Video & Reels',
+    href: '/admin/video',
+    icon: VideoIcon
   },
   {
     title: 'Cài đặt',
     href: '/admin/settings',
     icon: Settings
   }
+  
 ]
 
 export function AdminSidebar() {

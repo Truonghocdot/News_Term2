@@ -1,5 +1,5 @@
 import { getErrorMessage } from "./erroMessage"
-
+import { BASE_URL } from "../../enviroment"
 interface LoginResponse {
   success: boolean
   message?: string
@@ -21,11 +21,11 @@ interface RegisterData {
   password: string
   roleName: string
 }
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/auth'
+
 
 export async function login(username: string, password: string): Promise<LoginResponse> {
   try {
-    const response = await fetch(`${API_BASE_URL}/login`, {
+    const response = await fetch(`${BASE_URL}/api/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -59,7 +59,7 @@ export async function login(username: string, password: string): Promise<LoginRe
 
 export async function register(userData: RegisterData): Promise<LoginResponse> {
   try {
-    const response = await fetch(`${API_BASE_URL}/register`, {
+    const response = await fetch(`${BASE_URL}/api/auth/register`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -97,7 +97,7 @@ export async function refreshToken(): Promise<{ success: boolean; token?: string
       throw new Error('No refresh token available')
     }
 
-    const response = await fetch(`${API_BASE_URL}/refresh`, {
+    const response = await fetch(`${BASE_URL}/api/auth/refresh`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
