@@ -1,6 +1,10 @@
+"use client"
+
 import { Bell, Search, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { logout } from '@/util/auth';
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,7 +48,7 @@ export function AdminHeader() {
             <DropdownMenuContent align="end">
               <DropdownMenuItem>Hồ sơ</DropdownMenuItem>
               <DropdownMenuItem>Cài đặt</DropdownMenuItem>
-              <DropdownMenuItem>Đăng xuất</DropdownMenuItem>
+              <DropdownMenuItem onClick={logout}>Đăng xuất</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>

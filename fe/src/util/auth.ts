@@ -130,11 +130,29 @@ export async function refreshToken(): Promise<{ success: boolean; token?: string
   }
 }
 
-export function logout() {
-  localStorage.removeItem('token')
-  localStorage.removeItem('refreshToken')
-  localStorage.removeItem('user')
-  window.location.href = '/login'
+
+
+
+export async function logout() {
+  const token = localStorage.getItem("token");
+
+  try {
+    await fetch("http://localhost:8080/api/auth/logout", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  } catch (error) {
+    console.error("Logout error:", error);
+  }
+
+  // Xoá dữ liệu frontend
+  localStorage.removeItem("token");
+  localStorage.removeItem("refreshToken");
+  localStorage.removeItem("user");
+
+  window.location.href = "/login";
 }
 
 export function getToken(): string | null {
