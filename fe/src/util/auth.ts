@@ -1,4 +1,5 @@
 import { getErrorMessage } from "./erroMessage"
+
 import { BASE_URL } from "../../enviroment"
 interface LoginResponse {
   success: boolean
@@ -39,11 +40,16 @@ export async function login(username: string, password: string): Promise<LoginRe
     }
 
     // Store tokens
-    if (data.token) {
-      localStorage.setItem('token', data.token)
-      localStorage.setItem('refreshToken', data.refreshToken)
-      localStorage.setItem('user', JSON.stringify(data.user))
-    }
+    // if (data.token) {
+    //   localStorage.setItem('token', data.token)
+    //   localStorage.setItem('refreshToken', data.refreshToken)
+    //   localStorage.setItem('user', JSON.stringify(data.user))
+    // }
+
+    // Lưu token vào cookie
+    localStorage.set("token", data.token, { expires: 1 }); // cookie hết hạn sau 1 ngày
+    localStorage.set("refreshToken", data.refreshToken, { expires: 7 });
+    localStorage.set("user", JSON.stringify(data.user));
 
     return {
       success: true,
@@ -148,11 +154,22 @@ export async function logout() {
   }
 
   // Xoá dữ liệu frontend
-  localStorage.removeItem("token");
-  localStorage.removeItem("refreshToken");
-  localStorage.removeItem("user");
+  // localStorage.removeItem("token");
+  // localStorage.removeItem("refreshToken");
+  // localStorage.removeItem("user");
+
+  // Xoá token ở cookie
+  localStorage.remove("token");
+  localStorage.remove("refreshToken");
+  localStorage.remove("user");
 
   window.location.href = "/login";
+}
+
+
+export function getUserFromCookie() {
+  const user = localStorage.get("user");
+  return user ? JSON.parse(user) : null;
 }
 
 export function getToken(): string | null {

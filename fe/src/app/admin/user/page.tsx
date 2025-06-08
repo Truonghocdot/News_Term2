@@ -1,7 +1,8 @@
 "use client";
-
+import axios from "axios";
 import { useEffect, useState } from "react";
 import EditableDataTable, { TableRow } from "@/component/TableAdmin";
+import { User } from "@/util/type";
 
 const UserPage = () => {
   const [data, setData] = useState<TableRow[]>([]);
@@ -12,8 +13,19 @@ const UserPage = () => {
       try {
         const res = await fetch("http://localhost:8080/api/auth/list");
         if (!res.ok) throw new Error("Failed to fetch");
-        const users = await res.json();
-        setData(users);
+        const data = await res.json();
+        const users: User[] = data.map((dt: any) => ({
+          id: dt.userId,
+          ...dt
+        }));
+        const dataTable : TableRow[] = users.map((u) => ({
+          id: u.id,
+          username: u.username,
+          gmail: u.gmail,
+          numberphone: u.numberphone,
+          sex: u.sex,
+        }));
+        setData(dataTable);
       } catch (error) {
         console.error("Lỗi khi lấy dữ liệu:", error);
       } finally {
@@ -24,10 +36,19 @@ const UserPage = () => {
     fetchData();
   }, []);
 
-  const handleDataChange = (updatedData: TableRow[]) => {
+  const handleDataChange =  (updatedData: TableRow[]) => {
     setData(updatedData);
     console.log("Updated data:", updatedData);
   };
+
+ const handleDeleteItem = async (id: number) => {
+    try {
+      await axios.delete(`http://localhost:8080/api/auth/${id}`);
+      return true;
+    } catch (error) {
+      throw error;
+    }
+  }
 
   if (loading) return <div>Đang tải dữ liệu...</div>;
 
@@ -36,12 +57,12 @@ const UserPage = () => {
       <EditableDataTable
         data={data}
         onDataChange={handleDataChange}
+        onDelete={handleDeleteItem}
         itemsPerPage={10}
         columns={[
           { key: "username", label: "Họ tên", editable: true },
           { key: "gmail", label: "Email", editable: true },
-          { key: "phone", label: "Số điện thoại", editable: true },
-          { key: "position", label: "Vị trí", editable: true },
+          { key: "numberphone", label: "Số điện thoại", editable: true },
         ]}
       />
     </div>
