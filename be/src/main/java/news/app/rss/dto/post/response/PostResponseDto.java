@@ -11,6 +11,7 @@ public class PostResponseDto {
     private String metaKeywords;
     private String metaDescription;
     private String content;
+    private String slug;
     private String thumbnail;
     private String gallery;
     private String types;

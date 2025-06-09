@@ -7,6 +7,7 @@ import lombok.Data;
 public class PostSearchRequestDto {
     private String title;
     private String tags;
+    private String slug;
     private LocalDateTime timePublish;
     private Long categoryId;
     private LocalDateTime createdAt;

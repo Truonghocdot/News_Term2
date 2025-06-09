@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 @Data
 public class PostUpdateRequestDto {
     private String title;
+    private String slug;
     private String metaKeywords;
     private String metaDescription;
     private String content;

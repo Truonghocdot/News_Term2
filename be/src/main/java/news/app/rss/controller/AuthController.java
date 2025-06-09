@@ -1,9 +1,8 @@
 package news.app.rss.controller;
 
 
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +47,12 @@ public class AuthController {
     @Autowired
     private RoleRepository roleRepository;
 
+
+	@GetMapping("/list")
+	public List<User> getAllUser() {
+		return userDetailsService.getAll();
+	}
+
 	@PostMapping("/login")
 	public ResponseEntity<?> login(@RequestBody AuthRequest request) {
 
@@ -67,6 +72,12 @@ public class AuthController {
 		} catch (AuthenticationException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
 		}
+	}
+
+	@PostMapping("/logout")
+	public ResponseEntity<?> logout(@RequestHeader("Authorization") String authHeader) {
+		String token = authHeader.replace("Bearer ", "");
+		return ResponseEntity.ok().build();
 	}
 
 	@PostMapping("/register")
@@ -153,5 +164,10 @@ public class AuthController {
 
 		String newToken = jwtUtil.generateToken(userDetails, user.getUsername(), user.getGmail());
 		return ResponseEntity.ok(new AuthResponse(newToken));
+	}
+
+	@DeleteMapping("/{id}")
+	public void deleteComment(@PathVariable Long id) {
+		userDetailsService.deleteUser(id);
 	}
 }

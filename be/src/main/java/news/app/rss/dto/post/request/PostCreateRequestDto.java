@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class PostCreateRequestDto {
     @NotBlank(message = "Title is required")
     private String title;
-
+    private String slug;
     private String metaKeywords;
     private String metaDescription;
 

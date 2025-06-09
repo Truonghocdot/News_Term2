@@ -25,9 +25,9 @@ public class CategoryController {
 
 	
 	//show
-    @GetMapping
-    public ResponseEntity<List<Category>> getAll() {
-        return ResponseEntity.ok(categoryService.findAll());
+    @GetMapping("/list")
+    public List<Category> getAll() {
+        return categoryService.getAll();
     }
     
     @GetMapping("/{id}")
@@ -37,13 +37,13 @@ public class CategoryController {
                 .orElse(ResponseEntity.notFound().build());
     }
     //thêm
-    @PostMapping
+    @PostMapping("/insert")
     public ResponseEntity<Category> create(@Valid @RequestBody Category category) {
         Category saved = categoryService.save(category);
         return ResponseEntity.ok(saved);
     }
     //sửa
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public ResponseEntity<Category> update(@PathVariable Long id, @Valid @RequestBody Category updatedCategory) {
         if (!categoryService.existsById(id)) {
             return ResponseEntity.notFound().build();

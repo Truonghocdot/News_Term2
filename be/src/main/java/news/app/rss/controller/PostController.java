@@ -17,7 +17,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/posts")
-@CrossOrigin(origins = "*")
+
 public class PostController {
 
     @Autowired
@@ -32,7 +32,7 @@ public class PostController {
      * - searchContent, searchKeywords, isPublished: tìm kiếm nâng cao
      * - page, size, sortBy, sortDirection: pagination
      */
-    @GetMapping
+    @GetMapping("/list")
     public ResponseEntity<Map<String, Object>> getPosts(
             @RequestParam(required = false) String keyword,
             @RequestParam(required = false) String title,
@@ -44,6 +44,7 @@ public class PostController {
             @RequestParam(required = false) String searchContent,
             @RequestParam(required = false) String searchKeywords,
             @RequestParam(required = false) Boolean isPublished,
+            @RequestParam(required = false) String slug,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy,
@@ -129,7 +130,7 @@ public class PostController {
      * URL: POST /api/posts
      * Request Body: PostCreateRequestDto
      */
-    @PostMapping
+    @PostMapping("/insert")
     public ResponseEntity<Map<String, Object>> createPost(@Valid @RequestBody PostCreateRequestDto createDto) {
         try {
             PostResponseDto createdPost = postService.createPost(createDto);

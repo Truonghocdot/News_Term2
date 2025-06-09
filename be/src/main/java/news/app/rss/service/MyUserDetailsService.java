@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
 
 import java.util.Collections;
 import java.util.List;
@@ -24,6 +25,10 @@ public class MyUserDetailsService implements UserDetailsService {
 
 	@Autowired
 	private RoleRepository roleRepository;
+
+	public List<User> getAll() {
+		return userRepository.findAll();
+	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -53,5 +58,9 @@ public class MyUserDetailsService implements UserDetailsService {
 
 	public User insert(User user) {
 		return userRepository.save(user);
+	}
+
+	public void deleteUser(Long id){
+		userRepository.deleteById(id);
 	}
 }

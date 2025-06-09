@@ -1,9 +1,11 @@
 package news.app.rss.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
 
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +17,7 @@ public class CategoryService {
 	@Autowired
     private CategoryRepository categoryRepository;
 
-    public List<Category> findAll() {
+    public List<Category> getAll() {
         return categoryRepository.findAll();
     }
 
@@ -23,7 +25,10 @@ public class CategoryService {
         return categoryRepository.findById(id);
     }
 
+    @Transactional
     public Category save(Category category) {
+        category.setCreatedAt(LocalDateTime.now());
+        category.setUpdatedAt(LocalDateTime.now());
         return categoryRepository.save(category);
     }
 

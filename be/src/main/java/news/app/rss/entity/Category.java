@@ -2,11 +2,7 @@ package news.app.rss.entity;
 
 import java.time.LocalDateTime;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 
 import lombok.Data;
 
@@ -21,8 +17,10 @@ public class Category {
 	private Long id;
 	private String name;
 	private String title;
+	private String slug;
 	private String metaKeywords;
-	private String meataDescription;
+	@Column(name = "meataDescription")
+	private String metaDescription;
 	private String thumbnail;
 	private Long parentId;
 	private LocalDateTime createdAt;
