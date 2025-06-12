@@ -22,4 +22,5 @@ public class PostResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private Long categoryId;
+    private String author;
 }

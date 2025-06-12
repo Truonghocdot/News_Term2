@@ -1,3 +1,4 @@
+import Cookies from "js-cookie"
 import { getErrorMessage } from "./erroMessage"
 
 import { BASE_URL } from "../../enviroment"
@@ -47,9 +48,9 @@ export async function login(username: string, password: string): Promise<LoginRe
     // }
 
     // Lưu token vào cookie
-    localStorage.set("token", data.token, { expires: 1 }); // cookie hết hạn sau 1 ngày
-    localStorage.set("refreshToken", data.refreshToken, { expires: 7 });
-    localStorage.set("user", JSON.stringify(data.user));
+    Cookies.set("token", data.token, { expires: 1 }); // cookie hết hạn sau 1 ngày
+    Cookies.set("refreshToken", data.refreshToken, { expires: 7 });
+    Cookies.set("user", JSON.stringify(data.user));
 
     return {
       success: true,

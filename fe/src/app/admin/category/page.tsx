@@ -124,6 +124,7 @@ const CategoryPage = () => {
         onCreate={handleCreateItem}
         itemsPerPage={10}
         columns={[
+          {key: "id", label: "id", editable: false, nullable: false},
           { key: "name", label: "Tên", editable: true, nullable: true },
           { key: "title", label: "Tiêu đề", editable: true },
           { key: "parentId", label: "parentId", editable: true },

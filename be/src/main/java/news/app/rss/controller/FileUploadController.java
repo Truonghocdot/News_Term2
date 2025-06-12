@@ -342,7 +342,7 @@ public class FileUploadController {
                     .filter(response -> filterByFileType(response, fileTypeFilter))
                     .sorted(Comparator.comparing(UploadResponse::getFilename))
                     .collect(Collectors.toList());
-
+            System.out.println("Data" + fileResponses.toString());
             return ResponseEntity.ok(fileResponses);
 
         } catch (IOException e) {

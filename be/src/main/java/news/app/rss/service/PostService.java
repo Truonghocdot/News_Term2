@@ -131,9 +131,6 @@ public class PostService {
         if (updateDto.getThumbnail() != null) {
             existingPost.setThumbnail(updateDto.getThumbnail());
         }
-        if (updateDto.getGallery() != null) {
-            existingPost.setGallery(updateDto.getGallery());
-        }
         if (updateDto.getTypes() != null) {
             existingPost.setTypes(updateDto.getTypes());
         }

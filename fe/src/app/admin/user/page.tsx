@@ -1,8 +1,8 @@
 "use client";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import EditableDataTable, { TableRow } from "@/component/TableAdmin";
-import { User } from "@/util/type";
+import EditableDataTable from "@/component/TableAdmin";
+import { TableRow, User } from "@/util/type";
 
 const UserPage = () => {
   const [data, setData] = useState<TableRow[]>([]);

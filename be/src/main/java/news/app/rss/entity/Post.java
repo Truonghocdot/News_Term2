@@ -23,7 +23,6 @@ public class Post {
 	private String metaDescription;
 	private String content;
 	private String thumbnail;
-	private String gallery;
 	private String types;
 	private String tags;
 	private Boolean isPublish;
@@ -32,4 +31,5 @@ public class Post {
 	private LocalDateTime timePublish;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
+	private String author;
 }

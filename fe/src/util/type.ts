@@ -1,30 +1,28 @@
 export interface Post {
-  id: string
+  id: number
   title?: string
   content?: string
   metaKeywords?: string
   metaDescription?: string
   thumbnail?: string
-  gallery?: string
   types?: string
   isPublish?: boolean
   video?: string
-  categoryId?: Category
-  timePublish?: Date
-  createdAt?: Date
-  updatedAt?: Date
-  tags?: string[]
-  slug?: string
+  categoryId?: number
+  timePublish?: string
+  createdAt?: string
+  updatedAt?: string
+  tags?: string
+  slug?: string,
+  author?: string
 
 }
-
-
 export interface Category {
   id: number
   name?: string
   title?: string
   slug?: string
-  parentId?: string
+  parentId?: number
   createdAt?: Date
   updatedAt?: Date
   metaKeywords?: string
@@ -96,4 +94,57 @@ export interface UploadResponse {
   url: string;
   fileType: FileType;
   originalName: string;
+}
+
+
+export enum typeButton {
+  TIME_DATE = "TIME_DATE",
+  TEXT = "TEXT",
+  SELECT = "SELECT",
+  NUMBER = "NUMBER"
+} 
+
+export enum typeData {
+  TIME_DATE = "TIME_DATE",
+  TEXT = "TEXT",
+  BOOL = "BOOL",
+  NUMBER = "NUMBER",
+  LIST = "LIST"
+}
+
+
+// Type definitions
+export interface TableRow {
+  id: number;
+  [key: string]: string | number | undefined | boolean | Date; 
+}
+ 
+export interface TableColumn {
+  key: string;
+  label: string;
+  editable: boolean;
+  nullable?: boolean;
+  typeButton?: typeButton;
+  typeData?: typeData;
+}
+
+export interface EditableDataTableProps {
+  data?: TableRow[];
+  onDataChange?: (data: TableRow[]) => void;
+  onDelete?: (id: number) => Promise<boolean>; // New prop for delete API
+  onCreate?: (data: Omit<TableRow, 'id'>, image?: File, video?: File) => Promise<boolean>; // New prop for create API
+  onEdit?: (item: TableRow) => Promise<boolean>;
+  itemsPerPage?: number;
+  columns?: TableColumn[];
+  showCreateButton?: boolean;
+  showThumbnail?: boolean; // Control create button visibility
+  categories?: Category[] | []
+}
+
+
+export interface PaginationInfo {
+  currentPage: number;
+  totalPages: number;
+  startIndex: number;
+  endIndex: number;
 }

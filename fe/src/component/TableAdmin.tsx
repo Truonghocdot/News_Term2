@@ -1,57 +1,18 @@
-import React, { useState } from 'react';
-import { Eye, Edit2, Trash2, Save, X, ChevronLeft, ChevronRight, Loader2, Plus, Upload, Image } from 'lucide-react';
+import dayjs from "dayjs"
+import React, { ReactNode, useState } from 'react';
+import { Eye, Edit2, Trash2, Save, X, ChevronLeft, ChevronRight, Loader2, Plus, Upload } from 'lucide-react';
+import TiptapEditor from '@/lib/post/wysiwyg';
+import { EditableDataTableProps, PaginationInfo, TableColumn, TableRow, typeButton } from '@/util/type';
 
-// Type definitions
-export interface TableRow {
-  id: number;
-  [key: string]: string | number | undefined | boolean;
-}
- 
-export interface TableColumn {
-  key: string;
-  label: string;
-  editable: boolean;
-  nullable?: boolean;
-}
-
-export interface EditableDataTableProps {
-  data?: TableRow[];
-  onDataChange?: (data: TableRow[]) => void;
-  onDelete?: (id: number) => Promise<boolean>; // New prop for delete API
-  onCreate?: (data: Omit<TableRow, 'id'>, image?: File) => Promise<boolean>; // New prop for create API
-  onEdit?: (item: TableRow) => Promise<boolean>;
-  itemsPerPage?: number;
-  columns?: TableColumn[];
-  showCreateButton?: boolean;
-  showThumbnail?: boolean; // Control create button visibility
-}
-
-
-export interface PaginationInfo {
-  currentPage: number;
-  totalPages: number;
-  startIndex: number;
-  endIndex: number;
-}
-
-// Sample data structure
-const initialData: TableRow[] = [];
-
-const defaultColumns: TableColumn[] = [
-  { key: 'name', label: 'Họ tên', editable: true },
-  { key: 'email', label: 'Email', editable: true },
-  { key: 'phone', label: 'Số điện thoại', editable: true },
-  { key: 'position', label: 'Vị trí', editable: true }
-];
 
 const EditableDataTable: React.FC<EditableDataTableProps> = ({ 
-  data = initialData, 
+  data = [], 
   onDataChange,
   onDelete, // New prop
   onCreate, // New prop
   onEdit,
   itemsPerPage = 5,
-  columns = defaultColumns,
+  columns = [],
   showCreateButton = true,
   showThumbnail = true
 }) => {
@@ -66,6 +27,8 @@ const EditableDataTable: React.FC<EditableDataTableProps> = ({
   const [isDeleting, setIsDeleting] = useState<boolean>(false); // New loading state
   const [deleteError, setDeleteError] = useState<string | null>(null); // New error state
   const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const [contentPost, SetContentPost] = useState<string> ("");
 
   // Thêm state cho edit API
   const [isEditing, setIsEditing] = useState<boolean>(false);
@@ -389,20 +352,33 @@ const handleSave = async (): Promise<void> => {
 
   // Render cell content with proper typing
   const renderCellContent = (item: TableRow, column: TableColumn): React.ReactNode => {
-    if (editingId === item.id && column.editable) {
-      return (
-        <input
-          type="text"
-          value={(editingData[column.key] as string) || ''}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
-            handleInputChange(column.key, e.target.value)
-          }
-          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-        />
-      );
-    }
-    return <span className="block truncate">{item[column.key]}</span>;
-  };
+  const value = item[column.key]
+
+  if (editingId === item.id && column.editable) {
+    return (
+      <input
+        type="text"
+        value={(editingData[column.key] as string) || ''}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+          handleInputChange(column.key, e.target.value)
+        }
+        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+      />
+    )
+  }
+
+  let displayValue: React.ReactNode
+
+  if (value instanceof Date) {
+    displayValue = dayjs(value).format("DD/MM/YYYY HH:mm") // định dạng tùy chọn
+  } else if (typeof value === 'boolean') {
+    displayValue = value ? "✅ Có" : "❌ Không"
+  } else {
+    displayValue = String(value ?? "")
+  }
+
+  return <span className="block truncate">{displayValue}</span>
+}
 
   // Render action buttons with proper typing
   const renderActionButtons = (item: TableRow): React.ReactNode => {
@@ -564,20 +540,28 @@ const handleSave = async (): Promise<void> => {
 
       {/* View Details Modal */}
       {viewingItem && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg w-full max-w-l max-h-[90vh] overflow-y-auto">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Chi tiết bản ghi</h3>
             <div className="space-y-4">
-              {columns.map((column: TableColumn) => (
+              {columns.map((column: TableColumn) => {
+                let renderNode: ReactNode;
+                const val: any = viewingItem[column.key];
+                renderNode = val;
+                if(val instanceof Date) {
+                  renderNode = dayjs(val).format("DD/MM/YYYY HH:mm");
+                }
+                return (
                 <div key={column.key} className="flex flex-col">
                   <label className="text-sm font-medium text-gray-700 mb-1">
                     {column.label}:
                   </label>
                   <div className="px-3 py-2 bg-gray-50 rounded-md text-sm text-gray-900">
-                    {viewingItem[column.key]}
+                    {renderNode}
                   </div>
                 </div>
-              ))}
+              );
+              })}
             </div>
             <div className="flex justify-end mt-6">
               <button
@@ -634,7 +618,7 @@ const handleSave = async (): Promise<void> => {
       {/* Create Modal */}
       {showCreateModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-lg w-full max-w-md max-h-[90vh] overflow-y-auto">
+          <div className="bg-white rounded-lg w-full max-w-l max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <h3 className="text-lg font-semibold text-gray-900 mb-4">Tạo mới bản ghi</h3>
               
@@ -702,20 +686,23 @@ const handleSave = async (): Promise<void> => {
 
               {/* Form Fields */}
               <div className="space-y-4">
-                {columns.filter(col => col.editable).map((column: TableColumn) => (
+                {columns.filter(col => col.editable ).map((column: TableColumn) => (
                   <div key={column.key}>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                     {column.label} { column.nullable && <span className="text-red-500">*</span>}
                     </label>
-                    <input
-                      type="text"
-                      value={(createData[column.key] as string) || ''}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
-                        handleCreateInputChange(column.key, e.target.value)
+                      { column.key !== "content" && <input
+                        type="text"
+                        value={(createData[column.key] as string) || ''}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => 
+                          handleCreateInputChange(column.key, e.target.value)
+                        }
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder={`Nhập ${column.label.toLowerCase()}`}
+                      />}
+                      {
+                        column.key === "content" && <TiptapEditor onChange={SetContentPost} value={contentPost}  />
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder={`Nhập ${column.label.toLowerCase()}`}
-                    />
                   </div>
                 ))}
               </div>
