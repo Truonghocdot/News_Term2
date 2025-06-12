@@ -322,6 +322,7 @@ const EditableDataTablePost: React.FC<EditableDataTableProps> = ({
   const handleVideoUpload = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const file = e.target.files?.[0];
     if (file) {
+      console.log("truongdz vl luong");
       // Validate file type - chỉ chấp nhận video
       const allowedTypes = [
         "video/mp4",
@@ -387,6 +388,11 @@ const EditableDataTablePost: React.FC<EditableDataTableProps> = ({
   const handleRemoveImage = (): void => {
     setCreateImage(null);
     setCreateImagePreview(null);
+  };
+
+  const handleRemoveVideo = (): void => {
+    setCreateVideo(null);
+    setCreateVideoPreview(null);
   };
 
   const handleCreate = async (): Promise<void> => {
@@ -484,6 +490,8 @@ const EditableDataTablePost: React.FC<EditableDataTableProps> = ({
       displayValue = listCategory.find((dt: Category) => dt.id == value)?.title;
     } else if (column.key == "video") {
       displayValue = value ? "✅ Có" : "❌ Không";
+    } else if (column.key == "content") {
+      displayValue = value?.toString().slice(0, 100) + ".....";
     } else {
       displayValue = String(value ?? "");
     }
@@ -800,6 +808,12 @@ const EditableDataTablePost: React.FC<EditableDataTableProps> = ({
                         accept="image/*"
                         onChange={handleImageUpload}
                       />
+                      <input
+                        type="file"
+                        className="hidden"
+                        accept="video/*"
+                        onChange={handleVideoUpload}
+                      />
                     </label>
                   )}
                 </div>
@@ -897,24 +911,20 @@ const EditableDataTablePost: React.FC<EditableDataTableProps> = ({
                         )}
                       {column.key === "isPublish" && (
                         <select
-                            value={ 0 | 1 | 2 | 3}
-                            onChange={(e) =>
-                              handleCreateInputChange(
-                                "isPublish",
-                                Number(e.target.value)
-                              )
-                            }
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          >
-                            <option value="">-- Chọn danh mục --</option>
-                              <option value={0}>
-                                Bài Viết Thường
-                              </option>
-                              <option value={1}>
-                                Bài Viết Video
-                              </option>
-                          </select>
-                      )}  
+                          value={0 | 1 | 2 | 3}
+                          onChange={(e) =>
+                            handleCreateInputChange(
+                              "isPublish",
+                              Number(e.target.value)
+                            )
+                          }
+                          className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        >
+                          <option value="">-- Chọn danh mục --</option>
+                          <option value={0}>Bài Viết Thường</option>
+                          <option value={1}>Bài Viết Video</option>
+                        </select>
+                      )}
                       {column.key === "content" && (
                         <TiptapEditor
                           onChange={(e) => {
@@ -924,30 +934,61 @@ const EditableDataTablePost: React.FC<EditableDataTableProps> = ({
                           value={contentPost}
                         />
                       )}
+
                       {column.key === "video" && (
-                        <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
-                          <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                            <Upload className="w-8 h-8 mb-4 text-gray-500" />
-                            <p className="mb-2 text-sm text-gray-500">
-                              <span className="font-semibold">
-                                Click để upload
-                              </span>{" "}
-                              hoặc kéo thả
-                            </p>
-                            <p className="text-xs text-gray-500">
-                              MP4, AVI, MOV, WMV, FLV, WebM, MKV, M4V, 3GP
-                            </p>
-                          </div>
-                          <input
-                            type="file"
-                            className="hidden"
-                            accept="video/*"
-                            onChange={handleVideoUpload}
-                          />
-                        </label>
+                        <div className="mt-4">
+                          {!createVideoPreview ? (
+                            // Upload area khi chưa có video
+                            <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+                              <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                <Upload className="w-8 h-8 mb-4 text-gray-500" />
+                                <p className="mb-2 text-sm text-gray-500">
+                                  <span className="font-semibold">
+                                    Click để upload
+                                  </span>{" "}
+                                  hoặc kéo thả
+                                </p>
+                                <p className="text-xs text-gray-500">
+                                  MP4, AVI, MOV, WMV, FLV, WebM, MKV, M4V, 3GP
+                                  (MAX. 50MB)
+                                </p>
+                              </div>
+                              <input
+                                type="file"
+                                className="hidden"
+                                accept="video/*"
+                                onChange={handleVideoUpload}
+                              />
+                            </label>
+                          ) : (
+                            // Video preview khi đã có video
+                            <div className="space-y-2">
+                              <label className="block text-sm font-medium text-gray-700">
+                                Xem trước video:
+                              </label>
+                              <div className="relative">
+                                <video
+                                  src={createVideoPreview}
+                                  controls
+                                  className="w-full h-64 rounded-lg border border-gray-300 shadow-sm"
+                                />
+                                <button
+                                  onClick={handleRemoveVideo}
+                                  className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors shadow-lg"
+                                  type="button"
+                                  title="Xóa video"
+                                >
+                                  <X className="h-4 w-4" />
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                        </div>
                       )}
+
+                      {/* Progress bar cho video upload */}
                       {uploadProgress > 0 && (
-                        <div className="mb-4">
+                        <div className="mt-4">
                           <div className="w-full bg-gray-200 rounded-full h-2.5">
                             <div
                               className="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
@@ -955,7 +996,7 @@ const EditableDataTablePost: React.FC<EditableDataTableProps> = ({
                             />
                           </div>
                           <p className="text-sm text-gray-600 text-center mt-1">
-                            Đang tải: {uploadProgress}%
+                            Đang tải video: {uploadProgress}%
                           </p>
                         </div>
                       )}

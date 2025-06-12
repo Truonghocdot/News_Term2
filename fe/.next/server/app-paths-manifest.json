@@ -1,7 +1,12 @@
 {
   "/admin/page": "app/admin/page.js",
   "/admin/posts/page": "app/admin/posts/page.js",
+  "/admin/user/page": "app/admin/user/page.js",
+  "/admin/video/page": "app/admin/video/page.js",
+  "/admin/media/page": "app/admin/media/page.js",
+  "/admin/settings/page": "app/admin/settings/page.js",
+  "/admin/category/page": "app/admin/category/page.js",
   "/_not-found/page": "app/_not-found/page.js",
-  "/(auth)/login/page": "app/(auth)/login/page.js",
-  "/(client)/[slug]/[slug-post]/page": "app/(client)/[slug]/[slug-post]/page.js"
+  "/(client)/[slug]/[slug-post]/page": "app/(client)/[slug]/[slug-post]/page.js",
+  "/(client)/page": "app/(client)/page.js"
 }

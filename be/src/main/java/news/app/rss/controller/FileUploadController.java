@@ -47,6 +47,7 @@ public class FileUploadController {
         try {
             // Validate file basic properties
             ValidationResult validation = validateFile(file);
+            System.out.println(validation);
             if (!validation.isValid()) {
                 return ResponseEntity.badRequest().body(validation.getErrorMessage());
             }
