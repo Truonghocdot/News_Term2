@@ -52,6 +52,8 @@ export async function login(username: string, password: string): Promise<LoginRe
     Cookies.set("refreshToken", data.refreshToken, { expires: 7 });
     Cookies.set("user", JSON.stringify(data.user));
 
+    
+
     return {
       success: true,
       data: data
