@@ -39,4 +39,8 @@ public class CategoryService {
     public boolean existsById(Long id) {
         return categoryRepository.existsById(id);
     }
+
+    public Category findBySlug(String slug) {
+        return  categoryRepository.getBySlug(slug);
+    }
 }
