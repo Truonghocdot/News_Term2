@@ -18,12 +18,24 @@ export class PostApiService {
     this.axiosInstance.defaults.headers.common[
       "Authorization"
     ] = `Bearer ${currentToken}`;
-
+    
     try {
         const response = await this.axiosInstance.get(BASE_URL + urlPart)
         return response.data;
     }catch(error) {
         throw new Error(String(error));
+    }
+  }
+
+  async getDataFieldByParam (urlPart: string, type: string, value: string | number  ) {
+    this.axiosInstance.defaults.headers.common[
+      "Authorization"
+    ] = `Bearer ${currentToken}`;
+    try {
+      const response = await this.axiosInstance.post(BASE_URL + urlPart +"?" + type +"="+value);
+      return response.data;
+    }catch (err) {
+      throw new Error(String(err));
     }
   }
 
@@ -64,6 +76,19 @@ export class CategoryApiService {
 
     try {
         const response = await this.axiosInstance.get(BASE_URL + urlPart)
+        return response.data;
+    }catch(error) {
+        throw new Error(String(error));
+    }
+  }
+
+  async getDataBySlug( urlPart: String, slug: String) {
+    this.axiosInstance.defaults.headers.common[
+      "Authorization"
+    ] = `Bearer ${currentToken}`;
+
+    try {
+        const response = await this.axiosInstance.get(BASE_URL + urlPart+ "?slug=" + slug)
         return response.data;
     }catch(error) {
         throw new Error(String(error));
