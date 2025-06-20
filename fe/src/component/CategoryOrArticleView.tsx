@@ -1,6 +1,7 @@
 import NewsCard from "@/component/NewsCard";
 import { SidebarClient } from "@/component/SidebarClient";
 import { Category, Post } from "@/util/type";
+import { getCategoryOfPost } from "@/util/util";
 import { Metadata } from "next";
 import Link from "next/link";
 
@@ -14,6 +15,7 @@ interface CategoryOrArticleViewProps {
   category?: Category;
   articles?: Post[];
   relatedArticles?: Post[];
+  categoriesF?: Category[];
   currentPage?: number;
   totalPages?: number;
   onPageChange?: (page: number) => void;
@@ -30,12 +32,13 @@ export default function CategoryOrArticleView({
   relatedArticles = [],
   currentPage = 1,
   totalPages = 1,
+  categoriesF,
   onPageChange,
   onCommentSubmit,
 }: CategoryOrArticleViewProps) {
   // Nếu có article thì hiển thị trang chi tiết, không thì hiển thị danh mục
   const isArticleDetail = !!article;
-
+  console.log(article);
   // Format date helper
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("vi-VN", {
@@ -46,18 +49,6 @@ export default function CategoryOrArticleView({
   };
 
   // Convert Article to NewsCard format
-  const convertToNewsCardFormat = (articleData: Post) => ({
-    id: articleData.id,
-    title: articleData.title || "",
-    excerpt: articleData.metaDescription || "Không có mô tả",
-    featuredImage: articleData.thumbnail || "",
-    category: {
-      name: category?.name || params.category,
-      slug: category?.slug || params.category,
-    },
-    publishedAt: new Date(articleData.timePublish || ""),
-    author: { name: articleData.author || "" },
-  });
 
   // Handle comment submission
   const handleCommentSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -115,38 +106,38 @@ export default function CategoryOrArticleView({
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           <div className="lg:col-span-3">
-            {/* Breadcrumb */}
-            <nav className="flex mb-6 text-sm text-gray-600">
-              <Link href="/" className="hover:text-gray-900">
-                Trang chủ
-              </Link>
-              <span className="mx-2">/</span>
-              <Link
-                href={`/category/${params.category}`}
-                className="hover:text-gray-900"
-              >
-                {category?.name || params.category}
-              </Link>
-              <span className="mx-2">/</span>
-              <span className="text-gray-900 truncate">{article.title}</span>
-            </nav>
-
-            {/* Article Detail */}
-            <article className="bg-white rounded-lg shadow-sm">
-              {/* Category Tag */}
-              <div className="mb-4">
+            {isArticleDetail && (
+              <nav className="flex mb-6 text-sm text-gray-600">
+                <Link href="/" className="hover:text-gray-900">
+                  Trang chủ
+                </Link>
+                <span className="mx-2">/</span>
                 <Link
-                  href={`/category/${params.category}`}
-                  className="inline-block bg-primary/10 text-primary px-3 py-1 rounded-full text-sm font-medium hover:bg-primary/20 transition-colors"
+                  href={`${category?.slug || params.category}`}
+                  className="hover:text-gray-900"
                 >
                   {category?.name || params.category}
                 </Link>
-              </div>
+                <span className="mx-2">/</span>
+                <span className="text-gray-900 truncate">
+                  {article?.title || "Bài viết"}
+                </span>
+              </nav>
+            )}
 
-              {/* Title */}
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight">
-                {article.title}
-              </h1>
+            {/* Article Detail */}
+            <article className="bg-white rounded-lg shadow-sm">
+              {!isArticleDetail && (
+                <nav className="flex mb-6 text-sm text-gray-600">
+                  <Link href="/" className="hover:text-gray-900">
+                    Trang chủ
+                  </Link>
+                  <span className="mx-2">/</span>
+                  <span className="text-gray-900">
+                    {category?.name || params.category}
+                  </span>
+                </nav>
+              )}
 
               {/* Meta Information */}
               <div className="flex flex-wrap items-center gap-4 mb-6 text-sm text-gray-600">
@@ -263,7 +254,11 @@ export default function CategoryOrArticleView({
                   {relatedArticles.map((relatedArticle) => (
                     <NewsCard
                       key={relatedArticle.id}
-                      post={convertToNewsCardFormat(relatedArticle)}
+                      post={relatedArticle}
+                      category={getCategoryOfPost(
+                        relatedArticle.categoryId || 0,
+                        categoriesF || []
+                      )}
                     />
                   ))}
                 </div>
@@ -354,33 +349,16 @@ export default function CategoryOrArticleView({
 
           {/* Articles Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {articles.length > 0
-              ? articles.map((articleData) => (
-                  <NewsCard
-                    key={articleData.id}
-                    post={convertToNewsCardFormat(articleData)}
-                  />
-                ))
-              : // Fallback với mock data nếu không có articles
-                [1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                  <NewsCard
-                    key={i}
-                    post={{
-                      id: i,
-                      title: `${
-                        category?.name || params.category
-                      } tin tức số ${i}`,
-                      excerpt: "Mô tả ngắn về tin tức trong danh mục này...",
-                      featuredImage: "undefined",
-                      category: {
-                        name: category?.name || params.category,
-                        slug: category?.slug || params.category,
-                      },
-                      publishedAt: new Date(),
-                      author: { name: "Tác giả" },
-                    }}
-                  />
-                ))}
+            {articles.map((articleData) => (
+              <NewsCard
+                key={articleData.id}
+                post={articleData}
+                category={getCategoryOfPost(
+                  articleData.categoryId || 0,
+                  categoriesF || []
+                )}
+              />
+            ))}
           </div>
 
           {/* Pagination */}

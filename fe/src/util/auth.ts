@@ -101,7 +101,7 @@ try {
 
 export async function refreshToken(): Promise<{ success: boolean; token?: string }> {
   try {
-    const refreshToken = localStorage.getItem('refreshToken')
+    const refreshToken = Cookies.get('refreshToken')
     if (!refreshToken) {
       throw new Error('No refresh token available')
     }
@@ -121,7 +121,8 @@ export async function refreshToken(): Promise<{ success: boolean; token?: string
     }
 
     // Update token
-    localStorage.setItem('token', data.token)
+    Cookies.remove('token');
+    Cookies.set('token', data.token);
     
     return {
       success: true,
@@ -129,9 +130,9 @@ export async function refreshToken(): Promise<{ success: boolean; token?: string
     }
   } catch (error) {
     // Clear invalid tokens
-    localStorage.removeItem('token')
-    localStorage.removeItem('refreshToken')
-    localStorage.removeItem('user')
+    Cookies.get('token')
+    Cookies.get('refreshToken')
+    Cookies.get('user')
     
     return {
       success: false
@@ -143,7 +144,7 @@ export async function refreshToken(): Promise<{ success: boolean; token?: string
 
 
 export async function logout() {
-  const token = localStorage.getItem("token");
+  const token = Cookies.get("token");
 
   try {
     await fetch("http://localhost:8080/api/auth/logout", {
@@ -162,24 +163,24 @@ export async function logout() {
   // localStorage.removeItem("user");
 
   // Xoá token ở cookie
-  localStorage.remove("token");
-  localStorage.remove("refreshToken");
-  localStorage.remove("user");
+  Cookies.remove("token");
+  Cookies.remove("refreshToken");
+  Cookies.remove("user");
 
-  window.location.href = "/login";
+  window.location.href = "/";
 }
 
 
 export function getUserFromCookie() {
-  const user = localStorage.get("user");
+  const user = Cookies.get("user");
   return user ? JSON.parse(user) : null;
 }
 
-export function getToken(): string | null {
-  return localStorage.getItem('token')
+export function getToken(): string | undefined {
+  return Cookies.get('token')
 }
 
 export function getUser() {
-  const userStr = localStorage.getItem('user')
+  const userStr = Cookies.get('user')
   return userStr ? JSON.parse(userStr) : null
 }

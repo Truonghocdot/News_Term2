@@ -1,7 +1,55 @@
-import Link from 'next/link'
-import { TrendingUp, Eye } from 'lucide-react'
+"use client";
+import Link from "next/link";
+import { TrendingUp, Eye } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Category, Post } from "@/util/type";
+import { APICategory, APIPost } from "@/util/api";
 
 export function SidebarClient() {
+  const [postCurrent, setPostCurrent] = useState<Post[] | []>([]);
+  const [categoryCurrent, setCategoryCurrent] = useState<Category[] | []>([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await APIPost.getDataField("/api/posts/list");
+        const resCategory = await APICategory.getDataField(
+          "/api/categories/list"
+        );
+        if (res.status < 300 && resCategory.status < 300)
+          throw new Error("Failed to fetch");
+
+        const result = await res.data;
+        const resultCategories = await resCategory;
+        console.log(result);
+        console.log(resCategory);
+        const categories: Category[] = Array.isArray(resultCategories)
+          ? resultCategories?.map((dt: Category) => ({
+              ...dt,
+            }))
+          : [];
+        setCategoryCurrent(categories);
+        console.log(categories);
+        const posts: Post[] = Array.isArray(result)
+          ? result?.map((dt: Post) => ({
+              ...dt,
+            }))
+          : [];
+
+        // const dataTable: TableRow[] = posts.map((dt: Post) => ({
+        //   ...dt
+        // }));
+
+        setPostCurrent(posts);
+      } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu:", error);
+      } finally {
+        // setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <div className="space-y-8">
       {/* Popular Posts */}
@@ -11,22 +59,26 @@ export function SidebarClient() {
           Tin phổ biến
         </h3>
         <div className="space-y-4">
-          {[1, 2, 3, 4, 5].map((i) => (
-            <article key={i} className="flex space-x-3">
-              <div className="flex-shrink-0 w-16 h-16 bg-gray-200 rounded"></div>
-              <div className="flex-1 min-w-0">
-                <h4 className="text-sm font-medium line-clamp-2 mb-1">
-                  <Link href="#" className="hover:text-primary">
-                    Tiêu đề tin tức phổ biến số {i}
-                  </Link>
-                </h4>
-                <div className="flex items-center text-xs text-gray-500">
-                  <Eye className="h-3 w-3 mr-1" />
-                  <span>1.2k views</span>
-                </div>
-              </div>
-            </article>
-          ))}
+          {postCurrent.map((i: Post, index: number) => {
+            if (index < 6) {
+              return (
+                <article key={i.id} className="flex space-x-3">
+                  <div className="flex-shrink-0 w-16 h-16 bg-gray-200 rounded"></div>
+                  <div className="flex-1 min-w-0">
+                    <h4 className="text-sm font-medium line-clamp-2 mb-1">
+                      <Link href="#" className="hover:text-primary">
+                        {i.title}
+                      </Link>
+                    </h4>
+                    <div className="flex items-center text-xs text-gray-500">
+                      <Eye className="h-3 w-3 mr-1" />
+                      <span> {i.countViews ? i.countViews : 0} views</span>
+                    </div>
+                  </div>
+                </article>
+              );
+            }
+          })}
         </div>
       </div>
 
@@ -34,23 +86,19 @@ export function SidebarClient() {
       <div className="bg-white rounded-lg shadow-md p-6">
         <h3 className="text-lg font-bold mb-4">Danh mục</h3>
         <div className="space-y-2">
-          {[
-            { name: 'Thời sự', count: 124 },
-            { name: 'Thể thao', count: 89 },
-            { name: 'Kinh tế', count: 67 },
-            { name: 'Giải trí', count: 156 },
-            { name: 'Công nghệ', count: 78 },
-            { name: 'Thế giới', count: 234 }
-          ].map((category) => (
-            <Link
-              key={category.name}
-              href={`/${category.name.toLowerCase().replace(' ', '-')}`}
-              className="flex justify-between items-center py-2 px-3 rounded hover:bg-gray-50 text-sm"
-            >
-              <span>{category.name}</span>
-              <span className="text-gray-500">({category.count})</span>
-            </Link>
-          ))}
+          {categoryCurrent.map((category: Category, i: number) => {
+            if (i < 6)
+              return (
+                <Link
+                  key={category.name}
+                  href={`${category.slug}`}
+                  className="flex justify-between items-center py-2 px-3 rounded hover:bg-gray-50 text-sm"
+                >
+                  <span>{category.name}</span>
+                  <span className="text-gray-500">{category.countPost?.toString()}</span>
+                </Link>
+              );
+          })}
         </div>
       </div>
 
@@ -72,5 +120,5 @@ export function SidebarClient() {
         </div>
       </div>
     </div>
-  )
+  );
 }

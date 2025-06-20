@@ -2,8 +2,13 @@ import Link from 'next/link'
 import { Search, Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { Category } from '@/util/type'
 
-export function HeaderClient() {
+type propsHeaderClient = {
+  categories: Category[] | []
+}
+
+export function HeaderClient( {categories}: propsHeaderClient ) {
   return (
     <header className="sticky top-0 z-50 bg-white border-b shadow-sm">
       <div className="container mx-auto px-4">
@@ -57,21 +62,9 @@ export function HeaderClient() {
             <Link href="/" className="font-medium hover:text-primary whitespace-nowrap">
               Trang chủ
             </Link>
-            <Link href="/the-thao" className="hover:text-primary whitespace-nowrap">
-              Thể thao
-            </Link>
-            <Link href="/kinh-te" className="hover:text-primary whitespace-nowrap">
-              Kinh tế
-            </Link>
-            <Link href="/giai-tri" className="hover:text-primary whitespace-nowrap">
-              Giải trí
-            </Link>
-            <Link href="/cong-nghe" className="hover:text-primary whitespace-nowrap">
-              Công nghệ
-            </Link>
-            <Link href="/the-gioi" className="hover:text-primary whitespace-nowrap">
-              Thế giới
-            </Link>
+            {categories && categories.map((dt:Category) => (
+              <Link key={dt.id} href={dt.slug!} className="font-medium hover:text-primary whitespace-nowrap">{dt.title}</Link>
+            ))}
           </div>
         </nav>
       </div>

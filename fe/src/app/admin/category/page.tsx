@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import EditableDataTable, { TableRow } from "@/component/TableAdmin";
-import { Category } from "@/util/type";
+import EditableDataTable from "@/component/TableAdmin";
+import { Category, TableRow } from "@/util/type";
 import axios from "axios";
 
 const CategoryPage = () => {

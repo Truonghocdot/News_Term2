@@ -14,7 +14,8 @@ export interface Post {
   updatedAt?: string
   tags?: string
   slug?: string,
-  author?: string
+  author?: string,
+  countViews?: number
 
 }
 export interface Category {
@@ -28,6 +29,7 @@ export interface Category {
   metaKeywords?: string
   metaDescription?: string
   thumbnail?: string
+  countPost?: number
 }
 
 export interface User {
@@ -116,7 +118,7 @@ export enum typeData {
 // Type definitions
 export interface TableRow {
   id: number;
-  [key: string]: string | number | undefined | boolean | Date; 
+  [key: string]: string | number | undefined | boolean | Date | BigInt; 
 }
  
 export interface TableColumn {
