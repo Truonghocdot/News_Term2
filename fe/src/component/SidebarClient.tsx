@@ -4,6 +4,7 @@ import { TrendingUp, Eye } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Category, Post } from "@/util/type";
 import { APICategory, APIPost } from "@/util/api";
+import { BASE_URL } from "../../enviroment";
 
 export function SidebarClient() {
   const [postCurrent, setPostCurrent] = useState<Post[] | []>([]);
@@ -25,15 +26,15 @@ export function SidebarClient() {
         console.log(resCategory);
         const categories: Category[] = Array.isArray(resultCategories)
           ? resultCategories?.map((dt: Category) => ({
-              ...dt,
-            }))
+            ...dt,
+          }))
           : [];
         setCategoryCurrent(categories);
         console.log(categories);
         const posts: Post[] = Array.isArray(result)
           ? result?.map((dt: Post) => ({
-              ...dt,
-            }))
+            ...dt,
+          }))
           : [];
 
         // const dataTable: TableRow[] = posts.map((dt: Post) => ({
@@ -59,26 +60,37 @@ export function SidebarClient() {
           Tin phổ biến
         </h3>
         <div className="space-y-4">
-          {postCurrent.map((i: Post, index: number) => {
-            if (index < 6) {
-              return (
-                <article key={i.id} className="flex space-x-3">
-                  <div className="flex-shrink-0 w-16 h-16 bg-gray-200 rounded"></div>
-                  <div className="flex-1 min-w-0">
-                    <h4 className="text-sm font-medium line-clamp-2 mb-1">
-                      <Link href="#" className="hover:text-primary">
-                        {i.title}
-                      </Link>
-                    </h4>
-                    <div className="flex items-center text-xs text-gray-500">
-                      <Eye className="h-3 w-3 mr-1" />
-                      <span> {i.countViews ? i.countViews : 0} views</span>
-                    </div>
-                  </div>
-                </article>
-              );
-            }
-          })}
+          {postCurrent.slice(0, 6).map((i: Post) => (
+            <article key={i.id} className="flex space-x-3 mb-3">
+              {/* Thumbnail */}
+              <div className="flex-shrink-0 w-16 h-16 rounded overflow-hidden bg-gray-100">
+                {i.thumbnail ? (
+                  <img
+                    src={BASE_URL + i.thumbnail}
+                    alt={i.title}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-300" />
+                )}
+              </div>
+
+              {/* Text content */}
+              <div className="flex-1 min-w-0">
+                <h4 className="text-sm font-medium text-gray-800 line-clamp-2 mb-1">
+                  <Link href={'https://localhost:3000' + i.slug} className="hover:text-blue-600">
+                    {i.title}
+                  </Link>
+                </h4>
+
+                <div className="flex items-center text-xs text-gray-500">
+                  <Eye className="h-3 w-3 mr-1" />
+                  <span>{i.countViews || 0} lượt xem</span>
+                </div>
+              </div>
+            </article>
+          ))}
+
         </div>
       </div>
 
