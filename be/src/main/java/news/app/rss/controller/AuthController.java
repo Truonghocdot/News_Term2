@@ -67,7 +67,7 @@ public class AuthController {
 
 			String token = jwtUtil.generateToken(userDetails, user.getUsername() ,user.getGmail());
 
-			return ResponseEntity.ok(new AuthResponse(token));
+			return ResponseEntity.ok(new AuthResponse(token, user));
 
 		} catch (AuthenticationException e) {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
@@ -163,7 +163,7 @@ public class AuthController {
 				.orElseThrow(() -> new RuntimeException("User not found"));
 
 		String newToken = jwtUtil.generateToken(userDetails, user.getUsername(), user.getGmail());
-		return ResponseEntity.ok(new AuthResponse(newToken));
+		return ResponseEntity.ok(new AuthResponse(newToken, user));
 	}
 
 	@DeleteMapping("/{id}")

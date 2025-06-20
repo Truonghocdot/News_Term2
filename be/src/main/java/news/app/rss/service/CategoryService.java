@@ -41,6 +41,6 @@ public class CategoryService {
     }
 
     public Category findBySlug(String slug) {
-        return  categoryRepository.getBySlug(slug);
+        return  categoryRepository.findBySlug(slug);
     }
 }

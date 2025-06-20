@@ -1,5 +1,6 @@
 package news.app.rss.repository;
 
+import news.app.rss.dto.post.response.PostResponseDto;
 import news.app.rss.entity.Post;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +23,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             OR (:categoryId IS NULL OR p.categoryId = :categoryId)
             OR (:createdAtFrom IS NULL OR p.createdAt >= :createdAtFrom)
             OR (:updatedAtFrom IS NULL OR p.updatedAt >= :updatedAtFrom)
+            OR (:slug IS NULL OR LOWER(p.slug) LIKE LOWER(:slug))
         )
         AND NOT (
             :title IS NULL AND :tags IS NULL AND :timePublish IS NULL 
@@ -35,11 +37,13 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             @Param("categoryId") Long categoryId,
             @Param("createdAtFrom") LocalDateTime createdAtFrom,
             @Param("updatedAtFrom") LocalDateTime updatedAtFrom,
+            @Param("slug") String slug,
             Pageable pageable
     );
 
     // Method để lấy tất cả posts khi không có filter nào
-    Page<Post> findAll(Pageable pageable);
+    @Query("SELECT p FROM Post p ORDER BY p.countViews DESC")
+    Page<Post> findAllOrderByCountViewsDesc(Pageable pageable);
 
     // Method tìm kiếm với từ khóa chung (search trong title, content, tags)
     @Query("""
@@ -63,6 +67,7 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             OR (:searchKeywords IS NULL OR LOWER(p.metaKeywords) LIKE LOWER(CONCAT('%', :searchKeywords, '%')))
             OR (:categoryId IS NULL OR p.categoryId = :categoryId)
             OR (:isPublished IS NULL OR p.isPublish = :isPublished)
+            OR (:slug IS NULL OR LOWER(p.slug) LIKE LOWER(:slug))
         )
         AND NOT (
             :searchTitle IS NULL AND :searchContent IS NULL AND :searchTags IS NULL 
@@ -76,6 +81,12 @@ public interface PostRepository extends JpaRepository<Post, Long> {
             @Param("searchKeywords") String searchKeywords,
             @Param("categoryId") Long categoryId,
             @Param("isPublished") Boolean isPublished,
+            @Param("slug") String slug,
             Pageable pageable
     );
+
+
+
+    Post findBySlug(String slug);
+
 }

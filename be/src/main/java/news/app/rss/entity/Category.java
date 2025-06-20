@@ -25,5 +25,6 @@ public class Category {
 	private Long parentId;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
+	private Long countPost;
 
 }

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Play, Clock, Eye, Calendar, Tag, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Category, Post } from '@/util/type';
+import { BASE_URL } from '../../enviroment';
 
 
 interface VideoPostsGridProps {
@@ -276,7 +277,7 @@ const VideoPostsGrid: React.FC<VideoPostsGridProps> = ({
               {/* Video player */}
               <div className="aspect-video mb-4">
                 <video
-                  src={selectedVideo.video}
+                  src={BASE_URL + selectedVideo.video}
                   controls
                   className="w-full h-full rounded-lg"
                   poster={selectedVideo.thumbnail}

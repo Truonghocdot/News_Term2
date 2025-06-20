@@ -16,7 +16,7 @@ public class CategoryController {
 	@Autowired
     private CategoryService categoryService;
 
-    @GetMapping("/slug")
+    @GetMapping("/slug")    
     public Category getCategoryBySlug(@RequestParam("slug") String slug) {return categoryService.findBySlug(slug);}
 	
 	//show

@@ -4,6 +4,7 @@ import { Category, Post } from "@/util/type";
 import { getCategoryOfPost } from "@/util/util";
 import { Metadata } from "next";
 import Link from "next/link";
+import { BASE_URL } from "../../enviroment";
 
 interface CategoryOrArticleViewProps {
   params: {
@@ -169,8 +170,9 @@ export default function CategoryOrArticleView({
               {article.thumbnail && (
                 <div className="mb-8">
                   <div className="aspect-video bg-gray-200 rounded-lg overflow-hidden">
+                    
                     <img
-                      src={article.thumbnail}
+                      src={BASE_URL + article.thumbnail}
                       alt={article.title}
                       className="w-full h-full object-cover"
                       onError={(e) => {

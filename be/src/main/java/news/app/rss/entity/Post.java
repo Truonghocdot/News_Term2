@@ -32,4 +32,5 @@ public class Post {
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 	private String author;
+	private long countViews;
 }

@@ -49,13 +49,14 @@ public class PostController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "createdAt") String sortBy,
             @RequestParam(defaultValue = "desc") String sortDirection) {
-
+        System.out.println("hihi hihih " + slug);
         try {
             PostSearchRequestDto searchDto = new PostSearchRequestDto();
             searchDto.setKeyword(keyword);
             searchDto.setTitle(title);
             searchDto.setTags(tags);
             searchDto.setCategoryId(categoryId);
+            searchDto.setSlug(slug);
             searchDto.setSearchContent(searchContent);
             searchDto.setSearchKeywords(searchKeywords);
             searchDto.setIsPublished(isPublished);
@@ -96,12 +97,27 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
     }
-
+    @GetMapping("/slug/{slug}")
+    public ResponseEntity<Map<String, Object>> getSlug(@PathVariable String slug) {
+        try {
+            PostResponseDto posts = postService.findBySlug(slug);
+            System.out.println(posts);
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("data", posts);
+            return ResponseEntity.ok(response);
+        }catch (Exception e) {
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("success", false);
+            errorResponse.put("message", "Error retrieving posts: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
     /**
      * GET by ID - Lấy post theo ID
      * URL: GET /api/posts/{id}
      */
-    @GetMapping("/{id}")
+    @GetMapping("/id/{id}")
     public ResponseEntity<Map<String, Object>> getPostById(@PathVariable Long id) {
         try {
             PostResponseDto post = postService.getPostById(id);

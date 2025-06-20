@@ -26,6 +26,13 @@ public class PostService {
     @Autowired
     private PostRepository postRepository;
 
+    public  PostResponseDto findBySlug(String slug) {
+        System.out.println(slug);
+        Post pc = postRepository.findBySlug("/" + slug);
+
+        return convertToResponseDto(pc) ;
+    }
+
     public Page<PostResponseDto> searchPosts(PostSearchRequestDto searchDto) {
         Sort sort = Sort.by(
                 "desc".equalsIgnoreCase(searchDto.getSortDirection())
@@ -55,6 +62,7 @@ public class PostService {
                     searchDto.getSearchKeywords(),
                     searchDto.getCategoryId(),
                     searchDto.getIsPublished(),
+                    searchDto.getSlug(),
                     pageable
             );
         }
@@ -67,11 +75,12 @@ public class PostService {
                     searchDto.getCategoryId(),
                     searchDto.getCreatedAt(),
                     searchDto.getUpdatedAt(),
+                    searchDto.getSlug(),
                     pageable
             );
         } else {
             // Lấy tất cả posts khi không có filter
-            posts = postRepository.findAll(pageable);
+            posts = postRepository.findAllOrderByCountViewsDesc(pageable);
         }
 
         return posts.map(this::convertToResponseDto);
@@ -92,7 +101,8 @@ public class PostService {
                 searchDto.getTimePublish() != null ||
                 searchDto.getCategoryId() != null ||
                 searchDto.getCreatedAt() != null ||
-                searchDto.getUpdatedAt() != null;
+                searchDto.getUpdatedAt() != null||
+                searchDto.getSlug() != null;
     }
 
     public PostResponseDto createPost(PostCreateRequestDto createDto) {

@@ -13,7 +13,6 @@ public class PostResponseDto {
     private String content;
     private String slug;
     private String thumbnail;
-    private String gallery;
     private String types;
     private String tags;
     private Boolean isPublish;
@@ -23,4 +22,25 @@ public class PostResponseDto {
     private LocalDateTime updatedAt;
     private Long categoryId;
     private String author;
+    private long countViews;
+//
+//    public PostResponseDto(Long id, String title, String metaKeywords, String metaDescription, String content, String slug, String thumbnail, String types, String tags, Boolean isPublish, String video, LocalDateTime timePublish, LocalDateTime createdAt, LocalDateTime updatedAt, Long categoryId, String author, long countViews) {
+//        this.id = id;
+//        this.title = title;
+//        this.metaKeywords = metaKeywords;
+//        this.metaDescription = metaDescription;
+//        this.content = content;
+//        this.slug = slug;
+//        this.thumbnail = thumbnail;
+//        this.types = types;
+//        this.tags = tags;
+//        this.isPublish = isPublish;
+//        this.video = video;
+//        this.timePublish = timePublish;
+//        this.createdAt = createdAt;
+//        this.updatedAt = updatedAt;
+//        this.categoryId = categoryId;
+//        this.author = author;
+//        this.countViews = countViews;
+//    }
 }
